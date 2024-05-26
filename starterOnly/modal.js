@@ -14,7 +14,8 @@ const formdata = document.querySelectorAll(".formdata");
 const modalbtnclose = document.querySelector(".close");
 const submitBtn = document.querySelector(".btn-submit");
 const modalform = document.querySelector("form");
-console.log("🚀 ~ modalform:", modalform);
+const modalPrenomField = document.querySelector("#first");
+const modalNomField = document.querySelector("#last");
 
 //* launch modal event
 modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
@@ -29,10 +30,40 @@ modalbtnclose.addEventListener("click", () => {
     modalbg.style.display = "none";
 });
 
-//* reset submit btn
+//* reset submit
 modalform.addEventListener("submit", (event) => {
     event.preventDefault();
-    console.log("pas de refresh");
+});
+
+//* first / last name regex checker
+const isNameInputValid = (str) => {
+    const regex = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s'-]{2,}$/;
+
+    if (str.value.trim().length < 2) {
+        console.log(" votre réponse n'est pas assez long");
+        return;
+    }
+    if (regex.test(str.value) === false) {
+        console.log(str.value + " n'est pas valide.");
+        return;
+    } else {
+        console.log(str.value + " prenom valid");
+        return;
+    }
+};
+
+//* prenom validation
+modalPrenomField.addEventListener("change", () => {
+    // const userPrenom = event.target.value;
+    isNameInputValid(modalPrenomField);
+    console.log("prenom f() fini");
+});
+
+//* nom validation
+modalNomField.addEventListener("change", () => {
+    // const userPrenom = event.target.value;
+    isNameInputValid(modalNomField);
+    console.log("nom f() fini");
 });
 
 //* modal validation
