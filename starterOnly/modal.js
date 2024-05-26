@@ -12,8 +12,9 @@ const modalbg = document.querySelector(".bground");
 const modalbtn = document.querySelectorAll(".modal-btn");
 const formdata = document.querySelectorAll(".formdata");
 const modalbtnclose = document.querySelector(".close");
-const submitbtn = document.querySelector(".btn-submit");
-console.log("🚀 ~ submitbtn:", submitbtn);
+const submitBtn = document.querySelector(".btn-submit");
+const modalform = document.querySelector("form");
+console.log("🚀 ~ modalform:", modalform);
 
 //* launch modal event
 modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
@@ -29,10 +30,15 @@ modalbtnclose.addEventListener("click", () => {
 });
 
 //* reset submit btn
-submitbtn.addEventListener("submit", (event) => {
+modalform.addEventListener("submit", (event) => {
     event.preventDefault();
     console.log("pas de refresh");
 });
+
+//* modal validation
+function validate() {
+    console.log("validate here");
+}
 
 // TODO : mettre event.preventDefault pour le bouton submit
 // ? Est-ce qu'on peut faire un .reduce pour trouver le input[type=radio] ou for obligé?
