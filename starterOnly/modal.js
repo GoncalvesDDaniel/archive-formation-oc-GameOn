@@ -1,28 +1,38 @@
-function editNav() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
+function editnav() {
+    var x = document.getelementbyid("mytopnav");
+    if (x.classname === "topnav") {
+        x.classname += " responsive";
     } else {
-        x.className = "topnav";
+        x.classname = "topnav";
     }
 }
+// function editnav() {
+//     var x = document.getelementbyid("mytopnav");
+//     if (screen.width <= 768) {
+//         x.classList.add("responsive");
+//     } else {
+//         x.classList.remove("responsive");
+//     }
+// }
 
-// DOM Elements
+// dom elements
+// const modalbg = document.queryselector(".bground");
 const modalbg = document.querySelector(".bground");
-const modalBtn = document.querySelectorAll(".modal-btn");
-const formData = document.querySelectorAll(".formData");
-const modalBtnClose = document.querySelector(".close");
+console.log("🚀 ~ modalbg:", modalbg);
+const modalbtn = document.querySelectorAll(".modal-btn");
+const formdata = document.querySelectorAll(".formdata");
+const modalbtnclose = document.querySelector(".close");
 
 // launch modal event
-modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
+modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
 
 // launch modal form
-function launchModal() {
+function launchmodal() {
     modalbg.style.display = "block";
 }
 
-// Close modal event
-modalBtnClose.addEventListener("click", () => {
+// close modal event
+modalbtnclose.addEventListener("click", () => {
     modalbg.style.display = "none";
 });
 
