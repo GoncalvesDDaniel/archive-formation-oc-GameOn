@@ -1,39 +1,37 @@
-function editnav() {
-    var x = document.getelementbyid("mytopnav");
-    if (x.classname === "topnav") {
-        x.classname += " responsive";
+function editNav() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
     } else {
-        x.classname = "topnav";
+        x.className = "topnav";
     }
+    console.log(x);
 }
-// function editnav() {
-//     var x = document.getelementbyid("mytopnav");
-//     if (screen.width <= 768) {
-//         x.classList.add("responsive");
-//     } else {
-//         x.classList.remove("responsive");
-//     }
-// }
-
-// dom elements
-// const modalbg = document.queryselector(".bground");
+//* dom elements
 const modalbg = document.querySelector(".bground");
-console.log("🚀 ~ modalbg:", modalbg);
 const modalbtn = document.querySelectorAll(".modal-btn");
 const formdata = document.querySelectorAll(".formdata");
 const modalbtnclose = document.querySelector(".close");
+const submitbtn = document.querySelector(".btn-submit");
+console.log("🚀 ~ submitbtn:", submitbtn);
 
-// launch modal event
+//* launch modal event
 modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
 
-// launch modal form
+//* launch modal form
 function launchmodal() {
     modalbg.style.display = "block";
 }
 
-// close modal event
+//* close modal event
 modalbtnclose.addEventListener("click", () => {
     modalbg.style.display = "none";
+});
+
+//* reset submit btn
+submitbtn.addEventListener("submit", (event) => {
+    event.preventDefault();
+    console.log("pas de refresh");
 });
 
 // TODO : mettre event.preventDefault pour le bouton submit
