@@ -16,6 +16,7 @@ const submitBtn = document.querySelector(".btn-submit");
 const modalform = document.querySelector("form");
 const modalPrenomInput = document.querySelector("#first");
 const modalNomInput = document.querySelector("#last");
+const modalEmailInput = document.querySelector("#email");
 
 //* launch modal event
 modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
@@ -35,18 +36,18 @@ modalform.addEventListener("submit", (event) => {
     event.preventDefault();
 });
 
-//* first / last name regex checker
-const isNameInputValid = (input, inputName) => {
-    const regex = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s'-]{2,}$/;
+//* first / last name regex checker and HTML injection
+const isUserNameInputValide = (input, inputRequest) => {
+    const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s'-]{2,}$/;
     let result;
     if (input.value.trim().length < 2) {
         input.parentNode.dataset.errorVisible = true;
-        input.parentNode.dataset.error = `*Votre ${inputName} n'est pas assez long.`;
+        input.parentNode.dataset.error = `*Vérifier que votre ${inputRequest} a au moins 2 caratères.`;
         return;
     }
-    if (regex.test(input.value) === false) {
+    if (nameRegex.test(input.value) === false) {
         input.parentNode.dataset.errorVisible = true;
-        input.parentNode.dataset.error = `*Votre ${inputName} comporte un caratère invalide.`;
+        input.parentNode.dataset.error = `*Vérifier que votre ${inputRequest} ne contien pas de caratère invalide.`;
         return;
     } else {
         input.parentNode.dataset.errorVisible = false;
@@ -57,12 +58,29 @@ const isNameInputValid = (input, inputName) => {
 };
 //* prenom validation
 modalPrenomInput.addEventListener("change", () => {
-    isNameInputValid(modalPrenomInput, "prénom");
+    isUserNameInputValide(modalPrenomInput, "prénom");
 });
 
 //* nom validation
 modalNomInput.addEventListener("change", () => {
-    isNameInputValid(modalNomInput, "nom");
+    isUserNameInputValide(modalNomInput, "nom");
+});
+
+//* email regex checker
+const isUserEmailInputValid = (input) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(input.value) === true) {
+        input.parentNode.dataset.errorVisible = false;
+        input.parentNode.removeAttribute("data-error");
+        input.parentNode.removeAttribute("data-error-visible");
+    } else {
+        input.parentNode.dataset.errorVisible = true;
+        input.parentNode.dataset.error = `*Veuillez entrer une adresse mail valide`;
+    }
+};
+//* email validation
+modalEmailInput.addEventListener("change", () => {
+    isUserEmailInputValid(modalEmailInput);
 });
 
 //* modal validation
