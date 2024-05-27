@@ -17,6 +17,7 @@ const modalform = document.querySelector("form");
 const modalPrenomInput = document.querySelector("#first");
 const modalNomInput = document.querySelector("#last");
 const modalEmailInput = document.querySelector("#email");
+const modalQuantityInput = document.querySelector("#quantity");
 
 //* launch modal event
 modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
@@ -78,9 +79,27 @@ const isUserEmailInputValid = (input) => {
         input.parentNode.dataset.error = `*Veuillez entrer une adresse mail valide`;
     }
 };
+
 //* email validation
 modalEmailInput.addEventListener("change", () => {
     isUserEmailInputValid(modalEmailInput);
+});
+
+//* nombre de tournois regex checker
+const isUserQuantityInputValid = (input) => {
+    const quantityRegex = /^\d{1,2}$/;
+    if (quantityRegex.test(input.value) === true) {
+        input.parentNode.dataset.errorVisible = false;
+        input.parentNode.removeAttribute("data-error");
+        input.parentNode.removeAttribute("data-error-visibility");
+    } else {
+        input.parentNode.dataset.errorVisible = true;
+        input.parentNode.dataset.error = `*Veuiller entre une valeur entre 0 et 99`;
+    }
+};
+
+modalQuantityInput.addEventListener("change", () => {
+    isUserQuantityInputValid(modalQuantityInput);
 });
 
 //* modal validation
