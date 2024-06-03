@@ -17,7 +17,7 @@ const modalform = document.querySelector("form");
 const modalPrenomInput = document.querySelector("#first");
 const modalNomInput = document.querySelector("#last");
 const modalEmailInput = document.querySelector("#email");
-const modalUserInputBirthday = document.querySelector("#birthdate");
+const modalBirthdayInput = document.querySelector("#birthdate");
 const modalQuantityInput = document.querySelector("#quantity");
 const modalListRadioInput = document.querySelectorAll(
     ".formData input[type=radio]"
@@ -45,8 +45,8 @@ const injectModalError = (input, errorMessage) => {
     return false;
 };
 
-//* print modal error message on child
-const injectModalErrorOnChild = (input, errorMessage) => {
+//* print modal error message on parent
+const injectModalErrorOnParent = (input, errorMessage) => {
     input.dataset.errorVisible = true;
     input.dataset.error = `${errorMessage}`;
     return false;
@@ -57,6 +57,14 @@ const resetModalError = (input) => {
     input.parentNode.dataset.errorVisible = false;
     input.parentNode.removeAttribute("data-error-visible");
     input.parentNode.removeAttribute("data-error");
+    return true;
+};
+
+//* clear modal error on parent
+const resetModalErrorOnParent = (input) => {
+    input.dataset.errorVisible = false;
+    input.removeAttribute("data-error-visible");
+    input.removeAttribute("data-error");
     return true;
 };
 
@@ -103,13 +111,14 @@ modalEmailInput.addEventListener("change", () => {
 //* date checker (checked on validate)
 const today = new Date();
 const isUserAnAdult = (input) => {
+    if (input.value === undefined || null) return false;
     let userBirthDay = input.valueAsDate;
     let userYearOld = today.getFullYear() - userBirthDay.getFullYear();
     let userMonthOld = today.getMonth() - userBirthDay.getMonth();
     let userDayOld = today.getDate() - userBirthDay.getDate();
 
     if (userYearOld > 18) return true;
-    if (userYearOld < 18 || undefined || null) return false;
+    if (userYearOld < 18) return false;
     if (userYearOld === 18) {
         //?  18 yo with some months ?
         if (userMonthOld < 0) return false;
@@ -138,7 +147,7 @@ modalQuantityInput.addEventListener("change", () => {
 //* input lisener
 //* if radio is check clear the error and return true
 // let radioChecked = false;
-const isRadioCheck = (userModalInput) => {
+const isRadioCheck = (userModalInput, modalName) => {
     // listRadio.forEach((radio) => {
     //     radio.addEventListener("click", (event) => {
     //         if (event.currentTarget.checked === true) {
@@ -151,9 +160,9 @@ const isRadioCheck = (userModalInput) => {
     // });
     // return radioChecked;
     return Array.from(userModalInput).some((radio) => radio.checked === true)
-        ? resetModalError(userModalInput)
-        : injectModalErrorOnChild(
-              userModalInput,
+        ? resetModalErrorOnParent(modalName)
+        : injectModalErrorOnParent(
+              modalName,
               `Veuillez sélectionner une option`
           );
 };
@@ -188,8 +197,8 @@ modalform.addEventListener("submit", (event) => {
 //* modal validation
 function validate() {
     // console.log("validate here");
-    console.log(isRadioCheck(modalListRadioInput));
-    console.log(isUserAnAdult(modalUserInputBirthday));
+    console.log(isRadioCheck(modalListRadioInput, modalRadio));
+    console.log(isUserAnAdult(modalBirthdayInput));
 }
 // TODO : faire retourner true ou false aux fonctions
 // TODO : refactoring birthday f() et rajouter si input.valueAsDate === null etc
