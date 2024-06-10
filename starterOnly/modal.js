@@ -37,16 +37,16 @@ modalbtnclose.addEventListener("click", () => {
 });
 
 //* print modal error message with input.parentNode set by default (need to be change for the nodeElement like  radio list input)
-const injectModalError = (input, errorMessage, notNodeElement = true) => {
-    const target = notNodeElement ? input.parentNode : input[0].parentNode;
+const injectModalError = (input, errorMessage, notNodeList = true) => {
+    const target = notNodeList ? input.parentNode : input[0].parentNode;
     target.dataset.errorVisible = true;
     target.dataset.error = `${errorMessage}`;
     return false;
 };
 
 //* clear modal error
-const resetModalError = (input, notNodeElement = true) => {
-    const target = notNodeElement ? input.parentNode : input[0].parentNode;
+const resetModalError = (input, notNodeList = true) => {
+    const target = notNodeList ? input.parentNode : input[0].parentNode;
     target.dataset.errorVisible = false;
     target.removeAttribute("data-error-visible");
     target.removeAttribute("data-error");
@@ -84,24 +84,35 @@ const isUserEmailValid = (userModalInput) => {
 //* date checker (checked on validate)
 const isUserAnAdult = (userModalInput) => {
     const today = new Date();
-    let userBirthDay = userModalInput.valueAsDate;
-    if (!userBirthDay) return false;
-    let userYearOld = today.getFullYear() - userBirthDay.getFullYear();
-    // userMonthOld >= 0 if he is older than current month
-    let userMonthOld = today.getMonth() - userBirthDay.getMonth();
-    // userDayOld >= 0 if he is older than current day
-    let userDayOld = today.getDate() - userBirthDay.getDate();
+    const userBirthDay = userModalInput.valueAsDate;
+    const errorMessageNotValid = "Veuillew entrer une date de naissance valide";
+    const errorMessageNotAdult = "Vous devez avoir au moins 18 ans.";
 
-    if (userYearOld > 18) return true;
-    if (userYearOld < 18) return false;
-    if (userYearOld === 18) {
-        //?  18 yo with some months ?
-        if (userMonthOld < 0) return false;
-        //?  18 yo 0 mounth with some days ?
-        if (userDayOld < 0) return false;
-        else return true;
+    //* not valid case
+    if (!userBirthDay)
+        return injectModalError(userModalInput, errorMessageNotValid);
+
+    const userYearOld = today.getFullYear() - userBirthDay.getFullYear();
+    const userMonthOld = today.getMonth() - userBirthDay.getMonth();
+    const userDayOld = today.getDate() - userBirthDay.getDate();
+
+    //* not an adult <18
+    if (userYearOld < 18)
+        return injectModalError(userModalInput, errorMessageNotAdult);
+    //* edge case === 18
+    else if (userYearOld === 18) {
+        if (userMonthOld < 0 || (userMonthOld === 0 && userDayOld < 0)) {
+            return injectModalError(userModalInput, errorMessageNotAdult);
+        } else {
+            return resetModalError(userModalInput);
+        }
     }
+
+    //* is an adult >+18
+    else if (userYearOld > 18) return resetModalError(userModalInput);
 };
+// userMonthOld >= 0 if he is older than current month
+// userDayOld >= 0 if he is older than current day
 
 //* How many tournament checker
 const isUserQuantityValid = (userModalInput) => {
@@ -116,19 +127,27 @@ const isUserQuantityValid = (userModalInput) => {
 
 //* input lisener
 //* if radio is check clear the error and return true
-const isRadioCheck = (userModalInput) => {
-    Array.from(userModalInput).some((radio) => radio.checked === true)
-        ? resetModalError(userModalInput, false)
+const isLocationCheck = (radioNodeList) => {
+    return Array.from(radioNodeList).some((radio) => radio.checked === true)
+        ? resetModalError(radioNodeList, false)
         : injectModalError(
-              userModalInput,
+              radioNodeList,
               `Veuillez sélectionner une option`,
               false
           );
 };
 
+//* input lisener
+//* if radio is check clear the error and return true
+const isUserRadioCheck = (userModalInput) => {
+    return userModalInput.checked
+        ? resetModalError(userModalInput)
+        : injectModalError(userModalInput, `Veuillez sélectionner une option`);
+};
+
 //* checkbox lisener
 const isUserCheckboxCgCheck = (userModalInput) => {
-    userModalInput.checked === true
+    return userModalInput.checked === true
         ? resetModalError(userModalInput)
         : injectModalError(
               userModalInput,
@@ -168,10 +187,7 @@ const validateField = (input) => {
             break;
         default:
             if (input.name === "location") {
-                const inputRadioList = document.querySelectorAll(
-                    'input[name="location"]'
-                );
-                return isRadioCheck(inputRadioList);
+                return isUserRadioCheck(input);
             }
             break;
     }
@@ -180,18 +196,28 @@ const validateField = (input) => {
 //* Apply dom element to the function
 const modalValidation = () => {
     const isPrenomValid = validateField(modalPrenomInput);
+    console.log("🚀 ~ modalValidation ~ isPrenomValid:", isPrenomValid);
     const isNomValid = validateField(modalNomInput);
+    console.log("🚀 ~ modalValidation ~ isNomValid:", isNomValid);
     const isEmailValid = validateField(modalEmailInput);
+    console.log("🚀 ~ modalValidation ~ isEmailValid:", isEmailValid);
     const isUserAdult = validateField(modalBirthdayInput);
+    console.log("🚀 ~ modalValidation ~ isUserAdult:", isUserAdult);
     const isQuantityValid = validateField(modalQuantityInput);
-    const isLocationCheck = validateField(modalListRadioInput);
+    console.log("🚀 ~ modalValidation ~ isQuantityValid:", isQuantityValid);
+    const isOneLocationCheck = isLocationCheck(modalListRadioInput);
+    console.log(
+        "🚀 ~ modalValidation ~ isOneLocationCheck:",
+        isOneLocationCheck
+    );
     const isCgCheck = validateField(modalCheckboxCG);
+    console.log("🚀 ~ modalValidation ~ isCgCheck:", isCgCheck);
     return isPrenomValid &&
         isNomValid &&
         isEmailValid &&
         isUserAdult &&
         isQuantityValid &&
-        isLocationCheck &&
+        isOneLocationCheck &&
         isCgCheck
         ? true
         : false;
