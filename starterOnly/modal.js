@@ -1,18 +1,10 @@
-function editNav() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-        x.className += " responsive";
-    } else {
-        x.className = "topnav";
-    }
-    console.log(x);
-}
 //* dom elements
 const modalbg = document.querySelector(".bground");
 const modalbtn = document.querySelectorAll(".modal-btn");
 const modalbtnclose = document.querySelector(".close");
 const submitBtn = document.querySelector(".btn-submit");
 const modalform = document.querySelector("[name='reserve']");
+const modalBody = document.querySelector(".modal-body");
 
 //* input dom elements
 const modalPrenomInput = document.querySelector("#first");
@@ -22,19 +14,6 @@ const modalBirthdayInput = document.querySelector("#birthdate");
 const modalQuantityInput = document.querySelector("#quantity");
 const modalListRadioInput = document.querySelectorAll("input[name='location']");
 const modalCheckboxCG = document.querySelector("#checkbox1");
-
-//* launch modal form
-function launchmodal() {
-    modalbg.style.display = "block";
-}
-
-//* launch modal event
-modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
-
-//* close modal event
-modalbtnclose.addEventListener("click", () => {
-    modalbg.style.display = "none";
-});
 
 //* print modal error message with input.parentNode set by default (need to be change for the nodeElement like  radio list input)
 const injectModalError = (input, errorMessage, notNodeList = true) => {
@@ -53,11 +32,11 @@ const resetModalError = (input, notNodeList = true) => {
     return true;
 };
 
-//Validation function
+//*Validation function
 
 //* User name checker
 const isUserNameValide = (userModalInput, modalName) => {
-    const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿ\s'-]{2,}$/;
+    const nameRegex = /^[a-zA-ZÀ-ÖØ-öø-ÿÑñ\s'-\.]{2,}$/;
     const errorMessageLength = `Votre ${modalName} doit contenir au moins 2 caratères.`;
     const errorMessageCharaters = `Votre ${modalName} doit contenir uniquement des lettres.`;
 
@@ -85,8 +64,9 @@ const isUserEmailValid = (userModalInput) => {
 const isUserAnAdult = (userModalInput) => {
     const today = new Date();
     const userBirthDay = userModalInput.valueAsDate;
-    const errorMessageNotValid = "Veuillew entrer une date de naissance valide";
-    const errorMessageNotAdult = "Vous devez avoir au moins 18 ans.";
+    const errorMessageNotValid = "Veuillez entrer une date de naissance valide";
+    const errorMessageNotAdult =
+        "Vous devez avoir au moins 18 ans pour vous inscrire.";
 
     //* not valid case
     if (!userBirthDay)
@@ -111,8 +91,6 @@ const isUserAnAdult = (userModalInput) => {
     //* is an adult >+18
     else if (userYearOld > 18) return resetModalError(userModalInput);
 };
-// userMonthOld >= 0 if he is older than current month
-// userDayOld >= 0 if he is older than current day
 
 //* How many tournament checker
 const isUserQuantityValid = (userModalInput) => {
@@ -125,8 +103,7 @@ const isUserQuantityValid = (userModalInput) => {
     return resetModalError(userModalInput);
 };
 
-//* input lisener
-//* if radio is check clear the error and return true
+//* if  one radio location is check clear the error and return true
 const isLocationCheck = (radioNodeList) => {
     return Array.from(radioNodeList).some((radio) => radio.checked === true)
         ? resetModalError(radioNodeList, false)
@@ -137,7 +114,6 @@ const isLocationCheck = (radioNodeList) => {
           );
 };
 
-//* input lisener
 //* if radio is check clear the error and return true
 const isUserRadioCheck = (userModalInput) => {
     return userModalInput.checked
@@ -155,14 +131,18 @@ const isUserCheckboxCgCheck = (userModalInput) => {
           );
 };
 
-// All listener
+//* All listener
+
 //* addListener change on each input of the form
-//change can give an instant feedback for the user
+//*change can give an instant feedback for the user
 const setupListener = (form) => {
     form.querySelectorAll("input").forEach((input) => {
         input.addEventListener("change", () => validateField(input));
     });
 };
+
+//* launch modal event
+modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
 
 //* Validate function on change with switch case
 const validateField = (input) => {
@@ -193,25 +173,17 @@ const validateField = (input) => {
     }
 };
 
+//* Dom + function
+
 //* Apply dom element to the function
 const modalValidation = () => {
     const isPrenomValid = validateField(modalPrenomInput);
-    console.log("🚀 ~ modalValidation ~ isPrenomValid:", isPrenomValid);
     const isNomValid = validateField(modalNomInput);
-    console.log("🚀 ~ modalValidation ~ isNomValid:", isNomValid);
     const isEmailValid = validateField(modalEmailInput);
-    console.log("🚀 ~ modalValidation ~ isEmailValid:", isEmailValid);
     const isUserAdult = validateField(modalBirthdayInput);
-    console.log("🚀 ~ modalValidation ~ isUserAdult:", isUserAdult);
     const isQuantityValid = validateField(modalQuantityInput);
-    console.log("🚀 ~ modalValidation ~ isQuantityValid:", isQuantityValid);
     const isOneLocationCheck = isLocationCheck(modalListRadioInput);
-    console.log(
-        "🚀 ~ modalValidation ~ isOneLocationCheck:",
-        isOneLocationCheck
-    );
     const isCgCheck = validateField(modalCheckboxCG);
-    console.log("🚀 ~ modalValidation ~ isCgCheck:", isCgCheck);
     return isPrenomValid &&
         isNomValid &&
         isEmailValid &&
@@ -226,39 +198,50 @@ const modalValidation = () => {
 //* Apply dom element to the change listener
 setupListener(modalform);
 
+//* Validation
+
+//* modal validation
+function validate() {
+    const isModalValid = modalValidation();
+    const userName = modalPrenomInput.value;
+    const validateMessage = `Merci ${userName} ! Votre formulaire a été soumis avec succès.`;
+
+    if (isModalValid) {
+        let messageDiv = document.createElement("p");
+        messageDiv.className = "validate-message";
+        messageDiv.innerText = validateMessage;
+        modalBody.appendChild(messageDiv);
+    }
+}
+
 //* reset submit
 modalform.addEventListener("submit", (event) => {
     event.preventDefault();
 });
-//* modal validation
-function validate() {
-    console.log(modalValidation());
+
+//* operative function
+
+function editNav() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+        x.className += " responsive";
+    } else {
+        x.className = "topnav";
+    }
+    console.log(x);
 }
-// TODO : faire retourner true ou false aux fonctions
-// TODO : refactoring birthday f() et rajouter si input.valueAsDate === null etc
-// TODO : valider le formulaire en vérifiant si toutes les fonctions sont true
 
-// ? pourquoi je peux pas faire un some() est-ce que je dois utiliser une Array.from() etc ?
-// ? utiliser un novalide sur le form et prendre le relais sur la validier des champs ou tout prendre en charge. ?
+//* launch modal form
+function launchmodal() {
+    modalbg.style.display = "block";
+    modalform.style.display = "block";
+}
 
-// //* User prenom checker (instant feedback)
-// modalPrenomInput.addEventListener("change", () =>
-//     isUserNameValide(modalPrenomInput, "prénom")
-// );
-// //* User nom checker (instant feedback)
-// modalNomInput.addEventListener("change", () =>
-//     isUserNameValide(modalNomInput, "nom")
-// );
-// //* email checker (instant feedback)
-// modalEmailInput.addEventListener("change", () => {
-//     isUserEmailInputValid(modalEmailInput);
-// });
-
-// //* tournament lisener (instant feedback)
-// modalQuantityInput.addEventListener("change", () => {
-//     isUserQuantityInputValid(modalQuantityInput);
-// });
-
-// modalCheckboxCG.addEventListener("click", () => {
-//     isUserCheckboxCgCheck(modalCheckboxCG);
-// });
+//* close modal event
+modalbtnclose.addEventListener("click", () => {
+    modalbg.style.display = "none";
+    const isMessagePresent = document.querySelector(".validate-message");
+    if (isMessagePresent) {
+        isMessagePresent.remove();
+    }
+});
