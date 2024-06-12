@@ -5,6 +5,8 @@ const modalbtnclose = document.querySelector(".close");
 const submitBtn = document.querySelector(".btn-submit");
 const modalform = document.querySelector("[name='reserve']");
 const modalBody = document.querySelector(".modal-body");
+const heroSection = document.querySelector(".hero-section");
+const screenWidth = window.screen.width;
 
 //* input dom elements
 const modalPrenomInput = document.querySelector("#first");
@@ -141,7 +143,7 @@ const setupListener = (form) => {
     });
 };
 
-//* launch modal event
+//* display modal
 modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
 
 //* Validate function on change with switch case
@@ -240,8 +242,17 @@ function launchmodal() {
 //* close modal event
 modalbtnclose.addEventListener("click", () => {
     modalbg.style.display = "none";
+    heroSection.style.display = "grid";
     const isMessagePresent = document.querySelector(".validate-message");
     if (isMessagePresent) {
         isMessagePresent.remove();
     }
+    // //* lauch modal on mobile
+    window.addEventListener("resize", () => {
+        if (window.screen.width <= 800) {
+            heroSection.style.display = "none";
+        } else {
+            heroSection.style.display = "grid";
+        }
+    });
 });

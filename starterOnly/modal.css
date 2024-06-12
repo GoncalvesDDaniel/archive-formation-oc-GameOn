@@ -68,7 +68,7 @@ img {
     display: none;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px) {
     .topnav a {
         display: none;
     }
@@ -78,7 +78,7 @@ img {
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 800px) {
     .topnav.responsive {
         position: relative;
     }
@@ -170,7 +170,6 @@ main {
     overflow: auto;
     background-color: rgba(26, 39, 156, 0.4);
 }
-
 .content {
     margin: 5% auto;
     width: 100%;
@@ -185,6 +184,21 @@ main {
     padding-top: 10px;
 }
 
+/* * modal on full lenght for mobile */
+@media screen and (max-width: 800px) {
+    .bground {
+        position: relative;
+        left: -2vw;
+        margin: -20px;
+        width: 100dvw;
+        background-color: unset;
+    }
+    .content {
+        margin: 0px;
+        max-width: unset;
+        border-radius: 0px;
+    }
+}
 .modal-body {
     padding: 15px 8%;
     margin: 15px auto;
@@ -450,7 +464,7 @@ input[data-error]::after {
     z-index: 1;
 }
 .hero-headline {
-    font-size: clamp(36px, 4rem, 6rem);
+    font-size: clamp(36px, 5rem, 6rem);
     font-weight: normal;
     white-space: nowrap;
 }
@@ -476,6 +490,7 @@ input[data-error]::after {
     height: 100%;
     display: block;
     padding: 0;
+    object-fit: cover;
 }
 .copyrights {
     color: #fe142f;
