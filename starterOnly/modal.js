@@ -1,3 +1,7 @@
+//************************* */
+//* DOM
+//************************* */
+
 //* dom elements
 const modalbg = document.querySelector(".bground");
 const modalbtn = document.querySelectorAll(".modal-btn");
@@ -17,6 +21,38 @@ const modalQuantityInput = document.querySelector("#quantity");
 const modalListRadioInput = document.querySelectorAll("input[name='location']");
 const modalCheckboxCG = document.querySelector("#checkbox1");
 
+//************************* */
+//* All listener
+//************************* */
+
+//* reset submit
+modalform.addEventListener("submit", (event) => {
+    event.preventDefault();
+});
+
+//* display modal
+modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
+
+//* close modal
+modalbtnclose.addEventListener("click", closeModal);
+
+//* reset submit
+modalform.addEventListener("submit", (event) => {
+    event.preventDefault();
+});
+
+//* addListener change on each input of the form
+//*change can give an instant feedback for the user
+const setupListener = (form) => {
+    form.querySelectorAll("input").forEach((input) => {
+        input.addEventListener("change", () => validateField(input));
+    });
+};
+
+//************************* */
+//*Error message
+//************************* */
+
 //* print modal error message with input.parentNode set by default (need to be change for the nodeElement like  radio list input)
 const injectModalError = (input, errorMessage, notNodeList = true) => {
     const target = notNodeList ? input.parentNode : input[0].parentNode;
@@ -34,7 +70,9 @@ const resetModalError = (input, notNodeList = true) => {
     return true;
 };
 
+//************************* */
 //*Validation function
+//************************* */
 
 //* User name checker
 const isUserNameValide = (userModalInput, modalName) => {
@@ -105,7 +143,7 @@ const isUserQuantityValid = (userModalInput) => {
     return resetModalError(userModalInput);
 };
 
-//* if  one radio location is check clear the error and return true
+//* if  one radio location is check -> clear the error and return true
 const isLocationCheck = (radioNodeList) => {
     return Array.from(radioNodeList).some((radio) => radio.checked === true)
         ? resetModalError(radioNodeList, false)
@@ -116,7 +154,7 @@ const isLocationCheck = (radioNodeList) => {
           );
 };
 
-//* if radio is check clear the error and return true
+//* if radio is check by the user -> clear the error and return true
 const isUserRadioCheck = (userModalInput) => {
     return userModalInput.checked
         ? resetModalError(userModalInput)
@@ -133,21 +171,8 @@ const isUserCheckboxCgCheck = (userModalInput) => {
           );
 };
 
-//* All listener
-
-//* addListener change on each input of the form
-//*change can give an instant feedback for the user
-const setupListener = (form) => {
-    form.querySelectorAll("input").forEach((input) => {
-        input.addEventListener("change", () => validateField(input));
-    });
-};
-
-//* display modal
-modalbtn.forEach((btn) => btn.addEventListener("click", launchmodal));
-
-//* Validate function on change with switch case
-const validateField = (input) => {
+//* Validate function on listener 'change'
+function validateField(input) {
     switch (input.id) {
         case "first":
             return isUserNameValide(input, "prénom");
@@ -173,11 +198,30 @@ const validateField = (input) => {
             }
             break;
     }
-};
+}
 
+//* modal validation
+function validate() {
+    const isModalValid = modalValidation();
+    const userName = modalPrenomInput.value;
+    const validateMessage = `Merci ${userName} ! Votre formulaire a été soumis avec succès.`;
+
+    if (isModalValid) {
+        let messageDiv = document.createElement("p");
+        messageDiv.className = "validate-message";
+        messageDiv.innerText = validateMessage;
+        modalBody.appendChild(messageDiv);
+    }
+}
+
+//************************* */
 //* Dom + function
+//************************* */
 
-//* Apply dom element to the function
+//* Listener to all form input
+setupListener(modalform);
+
+//* Apply dom element to the corresponding validation function
 const modalValidation = () => {
     const isPrenomValid = validateField(modalPrenomInput);
     const isNomValid = validateField(modalNomInput);
@@ -197,32 +241,39 @@ const modalValidation = () => {
         : false;
 };
 
-//* Apply dom element to the change listener
-setupListener(modalform);
+//************************* */
+//* Additionnal function link to the form
+//************************* */
 
-//* Validation
-
-//* modal validation
-function validate() {
-    const isModalValid = modalValidation();
-    const userName = modalPrenomInput.value;
-    const validateMessage = `Merci ${userName} ! Votre formulaire a été soumis avec succès.`;
-
-    if (isModalValid) {
-        let messageDiv = document.createElement("p");
-        messageDiv.className = "validate-message";
-        messageDiv.innerText = validateMessage;
-        modalBody.appendChild(messageDiv);
+//* launch modal form
+function launchmodal() {
+    modalbg.style.display = "block";
+    modalform.style.display = "block";
+    // //* lauch modal on mobile
+    if (window.screen.width <= 800) {
+        heroSection.style.display = "none";
     }
+    return;
 }
 
-//* reset submit
-modalform.addEventListener("submit", (event) => {
-    event.preventDefault();
-});
+//* close modal event
+function closeModal() {
+    modalbg.style.display = "none";
+    heroSection.style.removeProperty("display");
 
+    //* clearn validation message if here
+    const isMessagePresent = document.querySelector(".validate-message");
+    if (isMessagePresent) {
+        isMessagePresent.remove();
+    }
+    return;
+}
+
+//************************* */
 //* operative function
+//************************* */
 
+//* resposive f()
 function editNav() {
     var x = document.getElementById("myTopnav");
     if (x.className === "topnav") {
@@ -230,29 +281,4 @@ function editNav() {
     } else {
         x.className = "topnav";
     }
-    console.log(x);
 }
-
-//* launch modal form
-function launchmodal() {
-    modalbg.style.display = "block";
-    modalform.style.display = "block";
-}
-
-//* close modal event
-modalbtnclose.addEventListener("click", () => {
-    modalbg.style.display = "none";
-    heroSection.style.display = "grid";
-    const isMessagePresent = document.querySelector(".validate-message");
-    if (isMessagePresent) {
-        isMessagePresent.remove();
-    }
-    // //* lauch modal on mobile
-    window.addEventListener("resize", () => {
-        if (window.screen.width <= 800) {
-            heroSection.style.display = "none";
-        } else {
-            heroSection.style.display = "grid";
-        }
-    });
-});
