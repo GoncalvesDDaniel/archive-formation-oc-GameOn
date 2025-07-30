@@ -1,5 +1,23 @@
-# Projet GameOn
-1. Forkez ce repo ;
-2. Il est conseillé d'utiliser VisualStudio Code et vous pouvez utiliser Docker, mais ce n'est pas obligatoire ;
-3. Il n'y a aucune dépendance ;
-4. Vous ne devez utiliser que du CSS personnalisé et du JavaScript pur, sans jQuery, Bootstrap ou autre librairie.
+# GameOn
+## 📖 Contexte
+
+Formation : Développeur d’application JavaScript React (OpenClassrooms).
+Objectif : développer une landing page, avec validation dynamique d’un formulaire, pour une entreprise organisant des concours de jeux.
+
+Langages autorisés / imposés : HTML5, CSS3, JavaScript Vanilla (aucune librairie ou framework).
+## 🔗 Aperçu
+
+[Démo du site](https://goncalvesddaniel.github.io/archive-formation-oc-GameOn/)  
+
+## 🛠️ Compétences travaillées
+
+- Validation dynamique de formulaires en JavaScript Vanilla
+
+- Gestion des événements et interactions utilisateur
+
+- Compréhension des interactions entre HTML, CSS et JavaScript
+
+- Code laissé public pour consultation.
+
+---
+> Code laissé public pour consultation.
